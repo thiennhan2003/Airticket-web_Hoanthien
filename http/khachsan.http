@@ -1,0 +1,24 @@
+### Get all hotels
+GET http://localhost:8080/api/v1/Khachsan
+
+### Create new hotel
+POST http://localhost:8080/api/v1/Khachsan/
+Content-Type: application/json
+
+{
+    "name": "Khachsan",
+    "address": "123 Main St2"
+}
+
+### Update hotel
+PUT http://localhost:8080/api/v1/Khachsan/1
+Content-Type: application/json
+
+{
+    "name": "Khachsan",
+    "address": "123 Main hutao"
+}
+
+### Delete hotel
+DELETE http://localhost:8080/api/v1/Khachsan/1
+
