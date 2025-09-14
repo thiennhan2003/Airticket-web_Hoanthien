@@ -1,19 +1,39 @@
-import express, { Request, Response } from "express";
-import KhachsanRoute from "./router/v1/Khachsan.route";
+import express, { Request, Response, NextFunction } from "express";
+import userRoute from "./router/v1/users.route";
+
 const app = express();
 
-// Middleware để chuyển đổi dữ liệu JSON từ request body thành đối tượng JavaScript
-// Giúp chúng ta có thể truy cập dữ liệu gửi lên từ client qua req.body
-app.use(express.json())
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// dùng file này quản lí các route
-app.use("/api/v1", KhachsanRoute);
 
+app.use("/api/v1", userRoute);
 
-
-//Hello World
+// Hello World
 app.get("/", (req: Request, res: Response) => {
-    res.send("Hello World!");
+  res.send("Hello World!");
+});
+
+// Middleware xử lý lỗi
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error(err); // log ra console để debug
+
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(status).json({
+    success: false,
+    status,
+    message
+  });
+});
+
+// Middleware 404 (route không tồn tại)
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    status: 404,
+    message: "Not Found"
+  });
 });
 
 export default app;
