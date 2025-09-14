@@ -1,5 +1,5 @@
 import { Schema, model} from "mongoose";
-
+import bcrypt from 'bcryptjs';
 
 const userSchema = new Schema(
     {
@@ -41,6 +41,25 @@ const userSchema = new Schema(
         versionKey: false
     }
 );
+//Middleware pre save ở lớp database
+//trước khi data được lưu xuống ---> mã khóa mật khẩu
 
+userSchema.pre('save', async function (next) {
+    const user = this;
+    // Nếu password không được set hoặc chưa thay đổi thì bỏ qua
+    if (!user.isModified('password')) {
+        return next();
+    }
+
+    if (!user.password) {
+        return next(new Error("Password is required"));
+    }
+
+    const hash = bcrypt.hashSync(user.password, 10);
+
+    user.password = hash;
+
+    next();
+})
 
 export default model('User', userSchema);

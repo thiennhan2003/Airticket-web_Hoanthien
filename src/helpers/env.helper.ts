@@ -8,5 +8,6 @@ console.log = originalLog;
 export const env = {
     port: process.env.PORT || 8080,
     nodeEnv: process.env.NODE_ENV || "development",
-    MongoDB_URI: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/Khachsan"
+    MongoDB_URI: process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/Khachsan",
+    JWT_SECRET: process.env.JWT_SECRET
 }
