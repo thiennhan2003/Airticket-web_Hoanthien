@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
     "fullName": "Hoàng Thiện Nhân",
-    "email": "nhanvai@gmail.com",
+    "email": "nhanvaddi@gmail.com",
     "phoneNumber": "0912345678",
     "password": "123456",
     "role": "user",

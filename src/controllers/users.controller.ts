@@ -3,7 +3,7 @@ import usersService from "../services/users.service";
 import  {sendJsonSuccess, httpStatus}  from '../helpers/response.helper';
 
 /**
- * Controller:
+ * Controllerdđ:
  * - Nhận request từ route
  * - NHận kết quả từ revice tương ứng
  * - Response lai cho client
