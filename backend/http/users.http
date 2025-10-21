@@ -1,0 +1,48 @@
+### Get all hotels
+GET http://localhost:8080/api/v1/users
+
+### Create new user
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "fullName": "Nguỹen Văn tứ",
+    "email": "nhan200312@gmail.com",
+    "phoneNumber": "0904241451",
+    "password": "123456",
+    "role": "user",
+    "isActive": true
+}
+
+### Create admin user
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "fullName": "CatusAdmin",
+    "email": "Admin2004@gmail.com",
+    "phoneNumber": "0773300148",
+    "password": "admin123",
+    "role": "admin",
+    "isActive": true
+}
+### Update user (thay thế :id bằng ID thực tế)
+PUT http://localhost:8080/api/v1/users/68c63072a7aeb4a2436fc779
+Content-Type: application/json
+
+{
+    "fullName": "Catus Admin",
+    "phoneNumber": "0773300148",
+}
+
+### Delete user (thay thế :id bằng ID thực tế)
+DELETE http://localhost:8080/api/v1/users/68c63072a7aeb4a2436fc779
+
+### Admin Login
+POST http://localhost:5000/admin/login
+Content-Type: application/json
+
+{
+  "email": "Nhanvai2003@gmail.com",
+  "password": "admin123"
+}

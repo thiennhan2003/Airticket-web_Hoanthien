@@ -1,0 +1,10 @@
+{
+  "flightCode": "VN124",
+  "passengerCount": 1,
+  "passengerName": "Test User",
+  "email": "test@example.com",
+  "phoneNumber": "123456789",
+  "seatNumber": "A1",
+  "price": 1500000,
+  "userId": "507f1f77bcf86cd799439011"
+}

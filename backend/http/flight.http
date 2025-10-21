@@ -1,0 +1,47 @@
+### Get all flights
+GET http://localhost:8080/api/v1/flights
+
+### Create new flight
+POST http://localhost:8080/api/v1/flights
+Content-Type: application/json
+
+{
+    "flightCode": "VN123",
+    "route": "Hà Nội - Hồ Chí Minh",
+    "departureTime": "2025-10-05T08:30:00.000Z",
+    "arrivalTime": "2025-10-05T10:30:00.000Z",
+    "totalSeats": 180,
+    "availableSeats": 180
+}
+
+### Create another flight
+POST http://localhost:8080/api/v1/flights
+Content-Type: application/json
+
+{
+    "flightCode": "VJ456",
+    "route": "Đà Nẵng - Nha Trang",
+    "departureTime": "2025-10-06T09:00:00.000Z",
+    "arrivalTime": "2025-10-06T10:15:00.000Z",
+    "totalSeats": 150,
+    "availableSeats": 150
+}
+
+### Update flight (thay :id bằng ID thực tế trong MongoDB)
+PUT http://localhost:8080/api/v1/flights/YOUR_FLIGHT_ID_HERE
+Content-Type: application/json
+
+{
+    "totalSeats": 200,
+    "availableSeats": 180
+}
+
+### Test gửi email thông báo thay đổi lịch bay
+POST http://localhost:8080/api/v1/flights/VJ324/test-notification
+Content-Type: application/json
+
+{
+  "test": true
+}
+### Delete flight (thay :id bằng ID thực tế)
+DELETE http://localhost:8080/api/v1/flights/66f3c9999a7aeb4a2436fc770
