@@ -228,7 +228,7 @@ const Payment = ({ user }) => {
     return (
       <div className="booking-container">
         <div className="booking-header">
-          <h2>🎉 Thanh toán thành công!</h2>
+          <h2>✅ Hoàn tất thanh toán</h2>
           <div className="success-buttons">
             <button onClick={() => navigate('/')} className="back-btn">
               ← Về trang chủ
@@ -244,7 +244,7 @@ const Payment = ({ user }) => {
             <div className="confirmation-card">
               <div className="confirmation-icon">✅</div>
               <div className="confirmation-message">
-                <h3>🎉 Thanh toán thành công!</h3>
+                <h3>✅ Hoàn tất thanh toán</h3>
                 <p>Mã thanh toán demo: <strong>{ticket.ticketId?.slice(-8).toUpperCase()}</strong></p>
                 <p>✅ Đã cập nhật trạng thái vé thành <strong>"Đã thanh toán"</strong></p>
                 <p>⏰ Hạn thanh toán đã được dừng lại</p>
