@@ -1,0 +1,69 @@
+# Test Wallet API Endpoints
+# Run these commands in your terminal after starting the server
+
+# 1. Test Get Wallet Balance
+curl -X GET "http://localhost:8080/api/v1/wallet/balance" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# 2. Test Get Wallet Info
+curl -X GET "http://localhost:8080/api/v1/wallet" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# 3. Test Get Wallet Transactions
+curl -X GET "http://localhost:8080/api/v1/wallet/transactions?page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# 4. Test Topup (will create payment intent)
+curl -X POST "http://localhost:8080/api/v1/wallet/topup" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "amount": 100000,
+    "paymentMethod": "stripe",
+    "description": "Test topup"
+  }'
+
+# 5. Test Confirm Topup (after Stripe payment)
+curl -X POST "http://localhost:8080/api/v1/wallet/confirm-topup" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "paymentIntentId": "pi_stripe_payment_intent_id"
+  }'
+
+# 6. Test Wallet Payment
+curl -X POST "http://localhost:8080/api/v1/payments/create-payment-intent" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "ticketId": "TICKET_ID",
+    "amount": 1500000,
+    "paymentMethod": "wallet",
+    "pin": "1234"
+  }'
+
+# 7. Test Set Wallet PIN
+curl -X POST "http://localhost:8080/api/v1/wallet/set-pin" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "pin": "1234"
+  }'
+
+# 8. Test Withdraw (for testing, will need manual approval)
+curl -X POST "http://localhost:8080/api/v1/wallet/withdraw" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "amount": 500000,
+    "bankAccount": {
+      "bankName": "Vietcombank",
+      "accountNumber": "1234567890",
+      "accountHolder": "NGUYEN VAN A"
+    },
+    "pin": "1234"
+  }'
+
+# Frontend Test URLs:
+# - Profile: http://localhost:3000/profile (tab "Ví điện tử")
+# - Payment: http://localhost:3000/payment/TICKET_ID (wallet option)

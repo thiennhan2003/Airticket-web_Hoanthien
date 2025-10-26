@@ -45,3 +45,13 @@ Content-Type: application/json
 }
 ### Delete flight (thay :id bằng ID thực tế)
 DELETE http://localhost:8080/api/v1/flights/66f3c9999a7aeb4a2436fc770
+
+
+### Update flight VN456 - change time (should trigger notification)
+PUT http://localhost:8080/api/v1/flights/68efb7d462b5523691c04ee0
+Content-Type: application/json
+
+{
+  "departureTime": "2025-10-20T04:03:00.000Z",
+  "arrivalTime": "2025-10-21T05:03:00.000Z"
+}

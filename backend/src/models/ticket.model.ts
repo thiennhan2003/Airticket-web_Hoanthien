@@ -100,7 +100,7 @@ const ticketSchema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["stripe", "vnpay", "momo"],
+      enum: ["stripe", "wallet"],
       default: null,
     },
     paidAt: {

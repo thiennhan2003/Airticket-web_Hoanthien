@@ -5,7 +5,62 @@ import './Payment.css';
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_publishable_key_here');
 
-const CheckoutForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentError }) => {
+// Payment Method Selection Component
+const PaymentMethodSelector = ({ selectedMethod, onMethodChange, walletBalance, amount }) => {
+  const paymentMethods = [
+    {
+      id: 'stripe',
+      name: 'Thẻ tín dụng',
+      icon: '💳',
+      description: 'Thanh toán bằng thẻ Visa, MasterCard',
+      available: true
+    },
+    {
+      id: 'wallet',
+      name: 'Ví điện tử',
+      icon: '👛',
+      description: `Số dư: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(walletBalance)}`,
+      available: walletBalance >= amount,
+      disabled: walletBalance < amount
+    }
+  ];
+
+  return (
+    <div className="payment-methods">
+      {paymentMethods.map((method) => (
+        <div
+          key={method.id}
+          className={`payment-method-card ${selectedMethod === method.id ? 'selected' : ''} ${!method.available ? 'disabled' : ''}`}
+          onClick={() => method.available && onMethodChange(method.id)}
+        >
+          <div className="method-header">
+            <div className="method-icon">{method.icon}</div>
+            <div className="method-info">
+              <div className="method-name">{method.name}</div>
+              <div className="method-description">{method.description}</div>
+            </div>
+            <div className="method-radio">
+              <input
+                type="radio"
+                checked={selectedMethod === method.id}
+                onChange={() => method.available && onMethodChange(method.id)}
+                disabled={!method.available}
+              />
+            </div>
+          </div>
+          {!method.available && (
+            <div className="method-error">
+              {method.id === 'wallet' ? 'Số dư không đủ' : 'Phương thức không khả dụng'}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Stripe Payment Form
+const StripePaymentForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentError }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -34,7 +89,7 @@ const CheckoutForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentE
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
           },
-          body: JSON.stringify({ ticketId, amount, currency }),
+          body: JSON.stringify({ ticketId, amount, currency, paymentMethod: 'stripe' }),
         });
 
         if (response.ok) {
@@ -52,7 +107,6 @@ const CheckoutForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentE
     };
 
     if (ticketId && amount > 0) createPaymentIntent();
-    else setError('Thiếu thông tin vé hoặc số tiền không hợp lệ');
   }, [ticketId, amount, currency]);
 
   const handleSubmit = async (event) => {
@@ -170,10 +224,165 @@ const CheckoutForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentE
   );
 };
 
-const PaymentForm = (props) => (
-  <Elements stripe={stripePromise}>
-    <CheckoutForm {...props} />
-  </Elements>
-);
+// Wallet Payment Form
+const WalletPaymentForm = ({ amount, ticketId, onPaymentSuccess, onPaymentError }) => {
+  const [loading, setLoading] = useState(false);
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [requiresPin, setRequiresPin] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const token = localStorage.getItem('accessToken');
+
+      const response = await fetch('http://localhost:8080/api/v1/payments/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ticketId,
+          amount,
+          currency: 'vnd',
+          paymentMethod: 'wallet',
+          pin: pin
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        onPaymentSuccess(data.data?.transactionId || 'wallet-payment');
+      } else {
+        const errorData = await response.json();
+        if (errorData.statusCode === 400 && errorData.message.includes('PIN')) {
+          setRequiresPin(true);
+          setError(errorData.message);
+        } else {
+          setError(errorData.message || 'Thanh toán thất bại');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Lỗi kết nối server');
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="payment-form wallet-payment">
+      <h3>Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</h3>
+      <p>💡 Thanh toán nhanh chóng bằng ví điện tử</p>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <form onSubmit={handleSubmit}>
+        {requiresPin && (
+          <div className="form-group">
+            <label>Nhập mã PIN ví điện tử</label>
+            <input
+              type="password"
+              placeholder="1234"
+              value={pin}
+              onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+              maxLength={6}
+              required
+              disabled={loading}
+            />
+          </div>
+        )}
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Đang xử lý...' : `💰 Thanh toán ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}`}
+        </button>
+      </form>
+
+      <p>⚡ Thanh toán ngay lập tức với ví điện tử của bạn</p>
+    </div>
+  );
+};
+
+// Main Payment Form Component
+const PaymentForm = ({ amount, currency, ticketId, onPaymentSuccess, onPaymentError }) => {
+  const [selectedMethod, setSelectedMethod] = useState('stripe');
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    // Lấy thông tin ví điện tử
+    const fetchWalletInfo = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await fetch('http://localhost:8080/api/v1/wallet/balance', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setWalletBalance(data.data?.walletBalance || 0);
+
+          // Tự động chọn ví nếu có đủ số dư
+          if (data.data?.walletBalance >= amount) {
+            setSelectedMethod('wallet');
+          }
+        }
+      } catch (error) {
+        console.error('Lỗi lấy thông tin ví:', error);
+      }
+    };
+
+    fetchWalletInfo();
+  }, [amount]);
+
+  const renderPaymentForm = () => {
+    switch (selectedMethod) {
+      case 'wallet':
+        return (
+          <WalletPaymentForm
+            amount={amount}
+            ticketId={ticketId}
+            onPaymentSuccess={onPaymentSuccess}
+            onPaymentError={onPaymentError}
+          />
+        );
+      case 'stripe':
+      default:
+        return (
+          <Elements stripe={stripePromise}>
+            <StripePaymentForm
+              amount={amount}
+              currency={currency}
+              ticketId={ticketId}
+              onPaymentSuccess={onPaymentSuccess}
+              onPaymentError={onPaymentError}
+            />
+          </Elements>
+        );
+    }
+  };
+
+  return (
+    <div className="payment-form-container">
+      <PaymentMethodSelector
+        selectedMethod={selectedMethod}
+        onMethodChange={setSelectedMethod}
+        walletBalance={walletBalance}
+        amount={amount}
+      />
+
+      <div className="payment-form-wrapper">
+        {renderPaymentForm()}
+      </div>
+    </div>
+  );
+};
 
 export default PaymentForm;

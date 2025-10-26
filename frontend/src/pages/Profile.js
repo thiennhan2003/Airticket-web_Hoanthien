@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
+import Wallet from '../components/Wallet';
 
 const Profile = ({ user, setUser }) => {
   const navigate = useNavigate();
@@ -388,6 +389,12 @@ const Profile = ({ user, setUser }) => {
             onClick={() => setActiveTab('bookings')}
           >
             Lịch sử đặt vé
+          </button>
+          <button
+            className={`tab ${activeTab === 'wallet' ? 'active' : ''}`}
+            onClick={() => setActiveTab('wallet')}
+          >
+            👛 Ví điện tử
           </button>
         </div>
 
@@ -1298,6 +1305,9 @@ const Profile = ({ user, setUser }) => {
   </div>
 )}
 
+        {activeTab === 'wallet' && (
+          <Wallet user={user} />
+        )}
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import authRoute from "./router/v1/auth.route";
 import ticketRoute from "./router/v1/ticket.route";
 import flightRoute from "./router/v1/flight.route";
 import paymentRoute from "./router/v1/payment.route";
+import walletRoute from "./router/v1/wallet.route";
 import seatLayoutRoute from "./router/v1/seatLayout.route";
 import testEmailRoute from "./router/v1/test-email.route";
 
@@ -44,6 +45,9 @@ apiV1Router.use('/flights', flightRoute);
 
 // Payment routes
 apiV1Router.use('/payments', paymentRoute);
+
+// Wallet routes
+apiV1Router.use('/wallet', walletRoute);
 
 // Seat layout routes
 apiV1Router.use('/seat-layout', seatLayoutRoute);

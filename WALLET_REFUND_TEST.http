@@ -1,0 +1,19 @@
+# Test Wallet Refund API
+# Run after starting the backend server
+
+# 1. Test wallet refund (thay YOUR_JWT_TOKEN và TICKET_ID bằng giá trị thực)
+curl -X POST "http://localhost:8080/api/v1/payments/refund" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ticketId": "TICKET_ID",
+    "reason": "Customer requested cancellation"
+  }'
+
+# 2. Test get payment status for wallet payment
+curl -X GET "http://localhost:8080/api/v1/payments/status/TICKET_ID" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Frontend test URLs:
+# - Cancel ticket: Click "Hủy vé" button in ticket card
+# - Check payment status: Should show refund information
