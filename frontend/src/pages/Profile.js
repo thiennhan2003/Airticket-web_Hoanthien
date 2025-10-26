@@ -214,6 +214,11 @@ const Profile = ({ user, setUser }) => {
 
       if (response.ok) {
         alert('Vé đã được hủy thành công!');
+
+        // Refresh thông tin user để cập nhật điểm loyalty và cấp độ mới
+        await fetchProfile();
+
+        // Cập nhật UI của ticket
         setTickets(prevTickets =>
           prevTickets.map(ticket =>
             ticket._id === ticketId
@@ -320,16 +325,101 @@ const Profile = ({ user, setUser }) => {
     return new Date() > deadline;
   };
 
-  // Hàm xác định cấp bậc thành viên dựa trên số vé đã đặt hoặc tiêu chí khác
-  const getMembershipTier = (userData) => {
-    // Đây là logic mẫu - bạn có thể điều chỉnh theo yêu cầu thực tế
-    // Ví dụ: dựa trên số vé đã đặt, tổng tiền đã chi tiêu, v.v.
-    if (userData.membershipTier) {
-      return userData.membershipTier;
+  // Hàm tính toán progress bar cho loyalty points
+  const calculateLoyaltyProgress = (userData) => {
+    if (!userData || !userData.totalSpentInWallet) {
+      return {
+        currentLevel: 'Bronze',
+        nextLevel: 'Silver',
+        progress: 0,
+        currentSpent: 0,
+        nextLevelAmount: 10000000,
+        remainingAmount: 10000000
+      };
     }
 
-    // Logic mặc định nếu không có thông tin từ API
-    return 'Bạc'; // Mặc định là Bạc cho thành viên mới
+    const totalSpent = userData.totalSpentInWallet;
+
+    // Định nghĩa các mốc cấp độ
+    const levels = [
+      { name: 'Bronze', min: 0, max: 10000000, multiplier: 1 },
+      { name: 'Silver', min: 10000000, max: 50000000, multiplier: 1.5 },
+      { name: 'Gold', min: 50000000, max: 100000000, multiplier: 2 },
+      { name: 'Diamond', min: 100000000, max: Infinity, multiplier: 3 }
+    ];
+
+    // Tìm cấp độ hiện tại
+    let currentLevelIndex = 0;
+    for (let i = 0; i < levels.length; i++) {
+      if (totalSpent >= levels[i].min && totalSpent < levels[i].max) {
+        currentLevelIndex = i;
+        break;
+      }
+    }
+
+    const currentLevel = levels[currentLevelIndex];
+    const currentLevelName = currentLevel.name;
+
+    // Kiểm tra nếu đã đạt cấp độ tối đa
+    if (currentLevelIndex === levels.length - 1) {
+      return {
+        currentLevel: currentLevelName,
+        nextLevel: null,
+        progress: 100,
+        currentSpent: totalSpent,
+        nextLevelAmount: null,
+        remainingAmount: 0,
+        isMaxLevel: true
+      };
+    }
+
+    const nextLevel = levels[currentLevelIndex + 1];
+
+    // Tính toán progress trong cấp độ hiện tại
+    const levelMin = currentLevel.min;
+    const levelMax = currentLevel.max;
+    const levelRange = levelMax - levelMin;
+    const progressInLevel = ((totalSpent - levelMin) / levelRange) * 100;
+
+    return {
+      currentLevel: currentLevelName,
+      nextLevel: nextLevel.name,
+      progress: Math.min(progressInLevel, 100),
+      currentSpent: totalSpent,
+      nextLevelAmount: nextLevel.min,
+      remainingAmount: nextLevel.min - totalSpent,
+      isMaxLevel: false
+    };
+  };
+
+  // Hàm tính điểm loyalty dựa trên tổng chi tiêu (1 điểm = 1000 VND chi tiêu)
+  const calculateLoyaltyPoints = (userData) => {
+    if (!userData || !userData.totalSpentInWallet) return 0;
+    return Math.floor(userData.totalSpentInWallet / 1000);
+  };
+
+  // Hàm xác định cấp bậc thành viên dựa trên tổng chi tiêu qua ví
+  const getMembershipTier = (userData) => {
+    if (!userData) return 'Bronze';
+
+    // Ưu tiên sử dụng walletLevel từ API
+    if (userData.walletLevel) {
+      // Chuyển đổi walletLevel thành tiếng Việt
+      switch (userData.walletLevel.toLowerCase()) {
+        case 'diamond': return 'Kim cương';
+        case 'gold': return 'Vàng';
+        case 'silver': return 'Bạc';
+        case 'bronze': return 'Đồng';
+        default: return 'Đồng';
+      }
+    }
+
+    // Fallback logic dựa trên tổng chi tiêu
+    const totalSpent = userData.totalSpentInWallet || 0;
+    if (totalSpent >= 100000000) return 'Kim cương'; // 100 triệu VND
+    if (totalSpent >= 50000000) return 'Vàng'; // 50 triệu VND
+    if (totalSpent >= 10000000) return 'Bạc'; // 10 triệu VND
+    return 'Đồng';
   };
 
   const getMembershipColor = (tier) => {
@@ -337,6 +427,7 @@ const Profile = ({ user, setUser }) => {
       case 'Kim cương': return '#E8E8E8';
       case 'Vàng': return '#FFD700';
       case 'Bạc': return '#C0C0C0';
+      case 'Đồng': return '#CD7F32';
       default: return '#C0C0C0';
     }
   };
@@ -349,8 +440,10 @@ const Profile = ({ user, setUser }) => {
         return ['Ưu tiên đặt vé', 'Hoàn tiền 50%', 'Hỗ trợ nhanh', 'Tích điểm 2x'];
       case 'Bạc':
         return ['Tích điểm cơ bản', 'Hỗ trợ tiêu chuẩn'];
+      case 'Đồng':
+        return ['Tích điểm cơ bản'];
       default:
-        return ['Tích điểm cơ bản', 'Hỗ trợ tiêu chuẩn'];
+        return ['Tích điểm cơ bản'];
     }
   };
 
@@ -414,9 +507,117 @@ const Profile = ({ user, setUser }) => {
                   <div className="membership-badge" style={{ backgroundColor: getMembershipColor(getMembershipTier(user)) }}>
                     <span className="membership-icon">
                       {getMembershipTier(user) === 'Kim cương' ? '💎' :
-                       getMembershipTier(user) === 'Vàng' ? '🥇' : '🥈'}
+                       getMembershipTier(user) === 'Vàng' ? '🥇' :
+                       getMembershipTier(user) === 'Bạc' ? '🥈' : '🥉'}
                     </span>
                     <span className="membership-text">Thành viên {getMembershipTier(user)}</span>
+                  </div>
+                  <div className="loyalty-points-info" style={{
+                    marginTop: '8px',
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    textAlign: 'center'
+                  }}>
+                    <div className="points-display" style={{
+                      fontWeight: '600',
+                      fontSize: '16px',
+                      color: '#FFD700'
+                    }}>
+                      ⭐ {calculateLoyaltyPoints(user).toLocaleString()} điểm
+                    </div>
+                    <div className="spent-info" style={{
+                      fontSize: '10px',
+                      opacity: 0.8,
+                      marginTop: '2px'
+                    }}>
+                      Đã chi: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(user.totalSpentInWallet || 0)}
+                    </div>
+
+                    {/* Mini Progress Bar in Badge */}
+                    {(() => {
+                      const progressData = calculateLoyaltyProgress(user);
+                      if (!progressData.isMaxLevel) {
+                        return (
+                          <div style={{
+                            marginTop: '6px',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            padding: '6px',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(255, 255, 255, 0.2)'
+                          }}>
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              marginBottom: '4px'
+                            }}>
+                              <span style={{
+                                fontSize: '9px',
+                                fontWeight: '500',
+                                color: '#FFD700'
+                              }}>
+                                {progressData.currentLevel} → {progressData.nextLevel}
+                              </span>
+                              <span style={{
+                                fontSize: '8px',
+                                opacity: 0.8
+                              }}>
+                                {Math.round(progressData.progress)}%
+                              </span>
+                            </div>
+
+                            <div style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                              height: '4px',
+                              borderRadius: '2px',
+                              overflow: 'hidden'
+                            }}>
+                              <div style={{
+                                width: `${progressData.progress}%`,
+                                height: '100%',
+                                backgroundColor: '#FFD700',
+                                borderRadius: '2px',
+                                transition: 'width 0.3s ease'
+                              }}></div>
+                            </div>
+
+                            <div style={{
+                              fontSize: '8px',
+                              textAlign: 'center',
+                              opacity: 0.7,
+                              marginTop: '2px'
+                            }}>
+                              Còn {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(progressData.remainingAmount)}
+                            </div>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div style={{
+                            marginTop: '6px',
+                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            padding: '6px',
+                            borderRadius: '6px',
+                            border: '1px solid rgba(255, 215, 0, 0.3)'
+                          }}>
+                            <div style={{
+                              fontSize: '9px',
+                              textAlign: 'center',
+                              color: '#FFD700',
+                              fontWeight: '500'
+                            }}>
+                              🏆 Cấp độ cao nhất!
+                            </div>
+                            <div style={{
+                              backgroundColor: '#FFD700',
+                              height: '4px',
+                              borderRadius: '2px',
+                              marginTop: '2px'
+                            }}></div>
+                          </div>
+                        );
+                      }
+                    })()}
                   </div>
                 </div>
               </div>
@@ -431,6 +632,197 @@ const Profile = ({ user, setUser }) => {
                       <span className="benefit-text">{benefit}</span>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Loyalty Points Card */}
+              <div className="loyalty-points-card" style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                padding: '20px',
+                borderRadius: '12px',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+              }}>
+                <h4 style={{
+                  margin: '0 0 16px 0',
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  ⭐ Loyalty Points
+                </h4>
+
+                <div style={{ display: 'grid', gap: '12px' }}>
+                  {/* Current Points */}
+                  <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}>
+                    <div style={{
+                      fontSize: '24px',
+                      fontWeight: '600',
+                      color: '#FFD700',
+                      marginBottom: '4px'
+                    }}>
+                      {calculateLoyaltyPoints(user).toLocaleString()} điểm
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      opacity: 0.9
+                    }}>
+                      Tương đương {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(user.totalSpentInWallet || 0)} đã chi tiêu
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  {(() => {
+                    const progressData = calculateLoyaltyProgress(user);
+                    if (progressData.isMaxLevel) {
+                      return (
+                        <div style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          padding: '12px',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(255, 255, 255, 0.2)'
+                        }}>
+                          <div style={{
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            color: '#FFD700',
+                            textAlign: 'center',
+                            marginBottom: '8px'
+                          }}>
+                            🏆 Đã đạt cấp độ cao nhất!
+                          </div>
+                          <div style={{
+                            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                            height: '8px',
+                            borderRadius: '4px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: '#FFD700',
+                              borderRadius: '4px'
+                            }}></div>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: '8px'
+                        }}>
+                          <span style={{
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            color: '#FFD700'
+                          }}>
+                            {progressData.currentLevel} → {progressData.nextLevel}
+                          </span>
+                          <span style={{
+                            fontSize: '10px',
+                            opacity: 0.8
+                          }}>
+                            {Math.round(progressData.progress)}%
+                          </span>
+                        </div>
+
+                        <div style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          height: '8px',
+                          borderRadius: '4px',
+                          overflow: 'hidden',
+                          marginBottom: '6px'
+                        }}>
+                          <div style={{
+                            width: `${progressData.progress}%`,
+                            height: '100%',
+                            backgroundColor: '#FFD700',
+                            borderRadius: '4px',
+                            transition: 'width 0.3s ease'
+                          }}></div>
+                        </div>
+
+                        <div style={{
+                          fontSize: '10px',
+                          textAlign: 'center',
+                          opacity: 0.8
+                        }}>
+                          Còn {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(progressData.remainingAmount)} để đạt {progressData.nextLevel}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Points Scale */}
+                  <div style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontWeight: '500',
+                      marginBottom: '8px',
+                      textAlign: 'center',
+                      color: '#FFD700'
+                    }}>
+                      🏆 Thang điểm thành viên
+                    </div>
+                    <div style={{
+                      display: 'grid',
+                      gap: '4px',
+                      fontSize: '10px'
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ opacity: 0.9 }}>🥉 Bronze: 0 - 10 triệu</span>
+                        <span style={{ color: '#FFD700' }}>1x điểm</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ opacity: 0.9 }}>🥈 Silver: 10 - 50 triệu</span>
+                        <span style={{ color: '#FFD700' }}>1.5x điểm</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ opacity: 0.9 }}>🥇 Gold: 50 - 100 triệu</span>
+                        <span style={{ color: '#FFD700' }}>2x điểm</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ opacity: 0.9 }}>💎 Diamond: 100 triệu+</span>
+                        <span style={{ color: '#FFD700' }}>3x điểm</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* How to earn points */}
+                  <div style={{
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    padding: '8px',
+                    borderRadius: '6px',
+                    textAlign: 'center',
+                    fontSize: '10px',
+                    color: '#FFD700',
+                    border: '1px solid rgba(255, 215, 0, 0.2)'
+                  }}>
+                    💰 Kiếm 1 điểm cho mỗi 1,000 VND chi tiêu qua ví điện tử
+                  </div>
                 </div>
               </div>
             </div>

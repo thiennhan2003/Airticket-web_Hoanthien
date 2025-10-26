@@ -13,6 +13,7 @@ import paymentRoute from "./router/v1/payment.route";
 import walletRoute from "./router/v1/wallet.route";
 import seatLayoutRoute from "./router/v1/seatLayout.route";
 import testEmailRoute from "./router/v1/test-email.route";
+import couponRoute from "./router/v1/coupon.route";
 
 dotenv.config();
 const app = express();
@@ -51,6 +52,9 @@ apiV1Router.use('/wallet', walletRoute);
 
 // Seat layout routes
 apiV1Router.use('/seat-layout', seatLayoutRoute);
+
+// Coupon routes
+apiV1Router.use('/coupons', couponRoute);
 
 // Test email route (remove in production)
 apiV1Router.use('/', testEmailRoute);

@@ -32,6 +32,7 @@ import {
   AccountCircle as AccountCircleIcon,
   ConfirmationNumber as TicketIcon,
   QrCodeScanner as QRScannerIcon,
+  LocalOffer as CouponIcon,
 } from '@mui/icons-material';
 import { styled, useTheme as useMuiTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -58,6 +59,7 @@ const menuItems = [
   { text: 'Tổng quan', icon: <DashboardIcon />, path: '/' },
   { text: 'Chuyến bay', icon: <FlightIcon />, path: '/flights' },
   { text: 'Đơn vé', icon: <TicketIcon />, path: '/tickets' },
+  { text: 'Mã giảm giá', icon: <CouponIcon />, path: '/coupons' },
   { text: 'Người dùng', icon: <PeopleIcon />, path: '/users' },
   { text: 'Quét QR', icon: <QRScannerIcon />, path: '/qr-scanner' },
   { text: 'Hồ sơ', icon: <AccountCircleIcon />, path: '/profile' },

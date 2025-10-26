@@ -71,19 +71,21 @@ const createPaymentIntent = async (req: Request, res: Response, next: NextFuncti
           pin: pin
         });
 
-        // Cập nhật ticket status
-        await ticketsService.updateById(ticketId, {
-          paymentStatus: 'paid',
-          paymentMethod: 'wallet',
-          paidAt: new Date()
-        });
+        // Cập nhật ticket status (chỉ khi payment mới thành công)
+        if (paymentResult.message === 'Payment completed successfully') {
+          await ticketsService.updateById(ticketId, {
+            paymentStatus: 'paid',
+            paymentMethod: 'wallet',
+            paidAt: new Date()
+          });
 
-        // Lấy thông tin flight để gửi email
-        const flight = await Flight.findById(ticket.flightId);
+          // Lấy thông tin flight để gửi email
+          const flight = await Flight.findById(ticket.flightId);
 
-        // Gửi email xác nhận
-        if (flight) {
-          await sendWalletPaymentConfirmationEmail(user, ticket, flight, paymentResult.newBalance);
+          // Gửi email xác nhận (chỉ gửi một lần)
+          if (flight) {
+            await sendWalletPaymentConfirmationEmail(user, ticket, flight, paymentResult.newBalance);
+          }
         }
 
         return sendJsonSuccess(res, {
@@ -91,8 +93,8 @@ const createPaymentIntent = async (req: Request, res: Response, next: NextFuncti
           paymentMethod: 'wallet',
           amount: amount,
           newBalance: paymentResult.newBalance,
-          message: 'Payment completed successfully with wallet'
-        }, httpStatus.OK.statusCode, 'Payment completed successfully');
+          message: paymentResult.message
+        }, httpStatus.OK.statusCode, 'Payment processed successfully');
 
       } catch (walletError: any) {
         return res.status(400).json({
@@ -146,12 +148,21 @@ const confirmPayment = async (req: Request, res: Response, next: NextFunction) =
         paymentMethod: 'stripe'
       });
 
-      // Get updated ticket for email
+      // Get updated ticket and user for loyalty update
       const ticket = await ticketsService.getById(paymentIntent.metadata.ticketId);
+      const user = res.locals.user;
+
+      // ✅ Cập nhật totalSpentInWallet cho thanh toán thẻ tín dụng (CHỈ loyalty points)
+      // Tính điểm loyalty từ số tiền vé đã thanh toán mà KHÔNG trừ tiền từ ví
+      user.updateWalletBalance(ticket.price, 'loyalty'); // loyalty = chỉ cập nhật totalSpentInWallet
+      await user.save();
+
+      // Get updated ticket for email
+      const updatedTicket = await ticketsService.getById(paymentIntent.metadata.ticketId);
 
       // Send confirmation email
-      if (ticket) {
-        await sendPaymentConfirmationEmail(ticket, paymentIntent);
+      if (updatedTicket) {
+        await sendPaymentConfirmationEmail(updatedTicket, paymentIntent);
       }
 
       // Send success response
@@ -332,8 +343,8 @@ const processRefund = async (req: Request, res: Response, next: NextFunction) =>
 
       await walletTransaction.save();
 
-      // Cộng tiền vào ví người dùng
-      user.updateWalletBalance(ticket.price, 'add');
+      // Hoàn tiền vào ví người dùng (trừ totalSpentInWallet để giảm điểm loyalty)
+      user.updateWalletBalance(ticket.price, 'refund');
       await user.save();
 
       // Cập nhật balance trong transaction
@@ -373,6 +384,15 @@ const processRefund = async (req: Request, res: Response, next: NextFunction) =>
       console.log('💳 Calling payment service refund...');
       refundResult = await paymentService.processRefund(refundData);
       console.log('✅ Refund processed successfully:', refundResult.refundId);
+
+      // ✅ Cập nhật totalSpentInWallet cho hoàn tiền thẻ tín dụng
+      // Trừ điểm loyalty khi hoàn tiền thẻ tín dụng (KHÔNG hoàn tiền vào ví)
+      // Chỉ giảm totalSpentInWallet, không thay đổi walletBalance
+      user.totalSpentInWallet -= ticket.price;
+      user.updateWalletLevel(); // Cập nhật lại level sau khi giảm spent
+      await user.save();
+
+      console.log('✅ Loyalty points updated after credit card refund');
     }
 
     // Update ticket status

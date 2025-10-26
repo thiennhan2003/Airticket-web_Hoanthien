@@ -24,7 +24,7 @@ export interface IUser extends Document {
   // Schema methods
   comparePassword(candidatePassword: string): Promise<boolean>;
   compareWalletPin(candidatePin: string): Promise<boolean>;
-  updateWalletBalance(amount: number, operation: 'add' | 'subtract'): number;
+  updateWalletBalance(amount: number, operation: 'add' | 'subtract' | 'refund' | 'loyalty'): number;
   updateWalletLevel(): void;
   checkSpendingLimit(amount: number, period?: 'daily' | 'monthly'): boolean;
 }
@@ -77,16 +77,16 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: null,
       minlength: [4, "PIN must be at least 4 digits"],
-      maxlength: [6, "PIN cannot be more than 6 digits"],
+      maxlength: [100, "PIN hash cannot be more than 100 characters"],
     },
     walletDailyLimit: {
       type: Number,
-      default: 10000000, // 10 triệu VND/ngày
+      default: 100000000, // 100 triệu VND/ngày
       min: [0, "Daily limit cannot be negative"],
     },
     walletMonthlyLimit: {
       type: Number,
-      default: 100000000, // 100 triệu VND/tháng
+      default: 500000000, // 500 triệu VND/tháng
       min: [0, "Monthly limit cannot be negative"],
     },
     totalSpentInWallet: {
@@ -148,12 +148,18 @@ userSchema.methods.compareWalletPin = async function(candidatePin: string): Prom
 };
 
 // Phương thức cập nhật số dư ví
-userSchema.methods.updateWalletBalance = function(amount: number, operation: 'add' | 'subtract'): number {
+userSchema.methods.updateWalletBalance = function(amount: number, operation: 'add' | 'subtract' | 'refund' | 'loyalty'): number {
   if (operation === 'add') {
     this.walletBalance += amount;
     this.totalTopupInWallet += amount;
-  } else {
+  } else if (operation === 'subtract') {
     this.walletBalance -= amount;
+    this.totalSpentInWallet += amount;
+  } else if (operation === 'refund') {
+    this.walletBalance += amount;
+    this.totalSpentInWallet -= amount; // ← Trừ totalSpentInWallet khi hoàn tiền
+  } else if (operation === 'loyalty') {
+    // Chỉ cập nhật totalSpentInWallet để tính loyalty points, KHÔNG ảnh hưởng walletBalance
     this.totalSpentInWallet += amount;
   }
 

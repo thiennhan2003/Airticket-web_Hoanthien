@@ -178,6 +178,24 @@ class WalletService {
         throw new Error('Daily spending limit exceeded');
       }
 
+      // Kiểm tra xem đã có transaction cho ticket này chưa
+      const existingTransaction = await WalletTransaction.findOne({
+        userId: userId,
+        referenceId: ticketId,
+        type: 'payment',
+        status: 'completed'
+      });
+
+      if (existingTransaction) {
+        console.log('✅ Payment already completed for ticket:', ticketId);
+        return {
+          success: true,
+          transactionId: existingTransaction._id,
+          newBalance: user.walletBalance,
+          message: 'Payment already completed'
+        };
+      }
+
       // Tạo wallet transaction
       const walletTransaction = new WalletTransaction({
         userId: userId,
@@ -196,8 +214,8 @@ class WalletService {
       user.updateWalletBalance(amount, 'subtract');
       await user.save();
 
-      // Gửi email xác nhận
-      await this.sendPaymentConfirmationEmail(user, walletTransaction);
+      // Email sẽ được gửi từ payment controller thay vì từ đây
+      // await this.sendPaymentConfirmationEmail(user, walletTransaction);
 
       return {
         success: true,

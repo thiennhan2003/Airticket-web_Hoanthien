@@ -59,3 +59,22 @@
   color: #6c757d;
   margin-top: 5px;
 }
+
+/* Coupon Section Styles */
+.coupon-section {
+  margin-bottom: 30px;
+}
+
+.coupon-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #495057;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.coupon-wrapper {
+  position: relative;
+}

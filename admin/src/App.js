@@ -11,6 +11,7 @@ import Tickets from './pages/Tickets';
 import Users from './pages/Users';
 import Profile from './pages/Profile';
 import QRScanner from './pages/QRScanner';
+import Coupons from './pages/Coupons';
 import Layout from './components/Layout';
 import { API_ENDPOINTS, getAuthHeader } from './config';
 import axios from 'axios';
@@ -119,6 +120,7 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/flights" element={<Flights />} />
                   <Route path="/tickets" element={<Tickets />} />
+                  <Route path="/coupons" element={<Coupons />} />
                   <Route path="/users" element={<Users />} />
                   <Route path="/qr-scanner" element={<QRScanner />} />
                   <Route path="/profile" element={<Profile />} />

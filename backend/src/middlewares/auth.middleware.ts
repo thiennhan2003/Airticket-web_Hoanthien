@@ -1,5 +1,6 @@
 import jwt, { JwtPayload }  from 'jsonwebtoken';
 import User from '../models/users.model';
+import Coupon from '../models/coupon.model';
 import { Request, Response, NextFunction } from "express";
 import createError from 'http-errors';
 import { env } from '../helpers/env.helper';
@@ -43,7 +44,7 @@ export const authenticateToken = async (req: Request, res: Response, next: NextF
 };
 
 export const authorize = (roles: string[] = []) => {
-    // roles param can be a single role string (e.g. Role.user or 'user') 
+    // roles param can be a single role string (e.g. Role.user or 'user')
     // or an array of roles (e.g. [Role.Admin, Role.user] or ['Admin', 'user'])
     if (typeof roles === 'string') {
         roles = [roles];
@@ -56,4 +57,43 @@ export const authorize = (roles: string[] = []) => {
         // authentication and authorization successful
         next();
     }
-}
+};
+
+export const validateCoupon = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { couponId } = req.body;
+
+    if (!couponId) {
+      return next(createError(400, 'Coupon ID is required'));
+    }
+
+    // Find coupon by ID
+    const coupon = await Coupon.findById(couponId);
+
+    if (!coupon) {
+      return next(createError(404, 'Coupon not found'));
+    }
+
+    // Check if coupon is active
+    if (!coupon.isActive) {
+      return next(createError(400, 'Coupon is not active'));
+    }
+
+    // Check if coupon is expired
+    if (coupon.isExpired()) {
+      return next(createError(400, 'Coupon has expired'));
+    }
+
+    // Check if usage limit reached
+    if (coupon.isUsageLimitReached()) {
+      return next(createError(400, 'Coupon usage limit reached'));
+    }
+
+    // Attach coupon to request for use in controller
+    res.locals.coupon = coupon;
+    next();
+  } catch (error) {
+    console.error('Error validating coupon:', error);
+    return next(createError(500, 'Error validating coupon'));
+  }
+};

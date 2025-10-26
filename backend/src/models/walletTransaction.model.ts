@@ -75,9 +75,23 @@ const walletTransactionSchema = new Schema<IWalletTransaction>(
   }
 );
 
-// Index để tối ưu query
+// Index để tối ưu query và tránh duplicate
 walletTransactionSchema.index({ userId: 1, createdAt: -1 });
 walletTransactionSchema.index({ status: 1, createdAt: -1 });
 walletTransactionSchema.index({ type: 1, userId: 1 });
+walletTransactionSchema.index({ referenceId: 1, type: 1, status: 1 });
+
+// Unique constraint để tránh duplicate payment cho cùng ticket
+walletTransactionSchema.index(
+  { userId: 1, referenceId: 1, type: 1, status: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: 'payment',
+      status: 'completed',
+      referenceId: { $exists: true }
+    }
+  }
+);
 
 export default model<IWalletTransaction>("WalletTransaction", walletTransactionSchema);

@@ -230,9 +230,15 @@ const WalletPaymentForm = ({ amount, ticketId, onPaymentSuccess, onPaymentError 
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const [requiresPin, setRequiresPin] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Prevent multiple submissions
+    if (loading || paymentCompleted) {
+      return;
+    }
 
     setLoading(true);
     setError('');
@@ -257,12 +263,23 @@ const WalletPaymentForm = ({ amount, ticketId, onPaymentSuccess, onPaymentError 
 
       if (response.ok) {
         const data = await response.json();
+        setPaymentCompleted(true);
+        setError('');
         onPaymentSuccess(data.data?.transactionId || 'wallet-payment');
       } else {
         const errorData = await response.json();
-        if (errorData.statusCode === 400 && errorData.message.includes('PIN')) {
-          setRequiresPin(true);
-          setError(errorData.message);
+        if (errorData.statusCode === 400) {
+          if (errorData.message.includes('PIN')) {
+            setRequiresPin(true);
+            setError(errorData.message);
+          } else if (errorData.message.includes('already completed')) {
+            // Payment đã hoàn thành trước đó
+            setPaymentCompleted(true);
+            setError('');
+            onPaymentSuccess('already-paid');
+          } else {
+            setError(errorData.message || 'Thanh toán thất bại');
+          }
         } else {
           setError(errorData.message || 'Thanh toán thất bại');
         }
@@ -278,32 +295,42 @@ const WalletPaymentForm = ({ amount, ticketId, onPaymentSuccess, onPaymentError 
   return (
     <div className="payment-form wallet-payment">
       <h3>Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</h3>
-      <p>💡 Thanh toán nhanh chóng bằng ví điện tử</p>
 
-      {error && <div className="error-message">{error}</div>}
+      {paymentCompleted ? (
+        <div className="payment-success">
+          <div className="success-icon">✅</div>
+          <p className="success-message">Thanh toán đã hoàn thành thành công!</p>
+          <p className="success-info">Không cần thực hiện thêm hành động nào.</p>
+        </div>
+      ) : (
+        <>
+          <p>💡 Thanh toán nhanh chóng bằng ví điện tử</p>
+          {error && <div className="error-message">{error}</div>}
 
-      <form onSubmit={handleSubmit}>
-        {requiresPin && (
-          <div className="form-group">
-            <label>Nhập mã PIN ví điện tử</label>
-            <input
-              type="password"
-              placeholder="1234"
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
-              maxLength={6}
-              required
-              disabled={loading}
-            />
-          </div>
-        )}
+          <form onSubmit={handleSubmit}>
+            {requiresPin && (
+              <div className="form-group">
+                <label>Nhập mã PIN ví điện tử</label>
+                <input
+                  type="password"
+                  placeholder="1234"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                  maxLength={6}
+                  required
+                  disabled={loading}
+                />
+              </div>
+            )}
 
-        <button type="submit" disabled={loading}>
-          {loading ? 'Đang xử lý...' : `💰 Thanh toán ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}`}
-        </button>
-      </form>
+            <button type="submit" disabled={loading || paymentCompleted}>
+              {loading ? 'Đang xử lý...' : `💰 Thanh toán ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}`}
+            </button>
+          </form>
 
-      <p>⚡ Thanh toán ngay lập tức với ví điện tử của bạn</p>
+          <p>⚡ Thanh toán ngay lập tức với ví điện tử của bạn</p>
+        </>
+      )}
     </div>
   );
 };

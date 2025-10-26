@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PaymentForm from '../components/PaymentForm';
+import CouponInput from '../components/CouponInput';
 import './Booking.css';
+import './Payment.css';
 
 const Payment = ({ user }) => {
   const { ticketId } = useParams();
@@ -11,6 +13,9 @@ const Payment = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
 
   useEffect(() => {
     const fetchTicket = async () => {
@@ -76,16 +81,33 @@ const Payment = ({ user }) => {
 
     fetchTicket();
   }, [ticketId, location.state, navigate]);
+
+  // Tính toán finalAmount khi ticket hoặc discount thay đổi
+  useEffect(() => {
+    if (ticket) {
+      const originalAmount = ticket.totalPrice || 0;
+      const discount = discountAmount || 0;
+      setFinalAmount(Math.max(0, originalAmount - discount));
+    }
+  }, [ticket, discountAmount]);
   
   
   // Hàm xử lý thanh toán thành công
   const handlePaymentSuccess = async (paymentIntentId) => {
+    // Nếu payment đã hoàn thành trước đó, chỉ cần set success state
+    if (paymentIntentId === 'already-paid') {
+      setPaymentSuccess(true);
+      setPaymentError(null);
+      console.log('✅ Payment was already completed');
+      return;
+    }
+
     setPaymentSuccess(true);
     setPaymentError(null);
-  
+
     try {
       const token = localStorage.getItem('accessToken');
-  
+
       // Gọi API để xác nhận thanh toán
       const response = await fetch(`http://localhost:8080/api/v1/payments/confirm-payment`, {
         method: 'POST',
@@ -97,20 +119,23 @@ const Payment = ({ user }) => {
           paymentIntentId: paymentIntentId
         }),
       });
-  
+
       if (response.ok) {
         // Lấy ticket mới từ backend
         const updatedTicketData = await response.json();
         const updatedTicket = updatedTicketData.data || updatedTicketData;
-  
+
         console.log('✅ Vé đã được cập nhật trạng thái "paid"', updatedTicket);
-  
+
         // Cập nhật state ticket với dữ liệu backend
         setTicket(prev => ({
           ...prev,
           ...updatedTicket
         }));
-  
+
+        // Apply coupon sau khi thanh toán thành công
+        await applyCouponAfterPayment();
+
       } else {
         const errorData = await response.json();
         console.error('❌ Lỗi cập nhật trạng thái vé:', errorData.message || response.statusText);
@@ -126,6 +151,42 @@ const Payment = ({ user }) => {
   // Hàm xử lý lỗi thanh toán
   const handlePaymentError = (error) => {
     setPaymentError(error);
+  };
+
+  // Xử lý khi coupon được áp dụng
+  const handleCouponApplied = (couponData) => {
+    setAppliedCoupon(couponData.coupon);
+    setDiscountAmount(couponData.discountAmount);
+    console.log('✅ Coupon applied:', couponData);
+  };
+
+  // Xử lý khi coupon bị xóa
+  const handleCouponRemoved = () => {
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+    console.log('🗑️ Coupon removed');
+  };
+
+  // Apply coupon sau khi thanh toán thành công
+  const applyCouponAfterPayment = async () => {
+    if (appliedCoupon && ticket) {
+      try {
+        const token = localStorage.getItem('accessToken');
+        await fetch('http://localhost:8080/api/v1/coupons/apply', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            couponId: appliedCoupon._id,
+          }),
+        });
+        console.log('✅ Coupon applied successfully');
+      } catch (error) {
+        console.error('❌ Error applying coupon:', error);
+      }
+    }
   };
 
   if (loading) {
@@ -291,6 +352,31 @@ const Payment = ({ user }) => {
                   {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(ticket.totalPrice)}
                 </span>
               </div>
+              {appliedCoupon && (
+                <>
+                  <div className="detail-item">
+                    <span><strong>Mã giảm giá:</strong></span>
+                    <span style={{ color: '#4caf50', fontWeight: 'bold' }}>
+                      {appliedCoupon.code} ({appliedCoupon.discountType === 'percentage'
+                        ? `${appliedCoupon.discountValue}%`
+                        : new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(appliedCoupon.discountValue)
+                      })
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span><strong>Giảm giá:</strong></span>
+                    <span style={{ color: '#4caf50', fontWeight: 'bold' }}>
+                      -{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(discountAmount)}
+                    </span>
+                  </div>
+                  <div className="detail-item" style={{ borderTop: '2px solid #4caf50', paddingTop: '10px' }}>
+                    <span><strong>Thành tiền:</strong></span>
+                    <span className="price" style={{ color: '#4caf50', fontSize: '1.2em' }}>
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(finalAmount)}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -305,12 +391,24 @@ const Payment = ({ user }) => {
           </div>
         </div>
 
+        {/* Mã giảm giá */}
+        <div className="coupon-section">
+          <h3>🎫 Mã giảm giá</h3>
+          <div className="coupon-wrapper">
+            <CouponInput
+              onCouponApplied={handleCouponApplied}
+              onCouponRemoved={handleCouponRemoved}
+              originalAmount={ticket.totalPrice}
+            />
+          </div>
+        </div>
+
         {/* Form thanh toán */}
         <div className="payment-section">
           <h3>Thông tin thanh toán</h3>
           <div className="payment-container">
             <PaymentForm
-              amount={ticket.totalPrice}
+              amount={finalAmount}
               currency="vnd"
               ticketId={ticket.ticketId}
               onPaymentSuccess={handlePaymentSuccess}

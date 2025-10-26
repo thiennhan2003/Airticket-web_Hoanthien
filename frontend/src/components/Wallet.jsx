@@ -59,6 +59,79 @@ const Wallet = ({ user }) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   };
 
+  // Hàm tính toán progress bar cho loyalty points
+  const calculateLoyaltyProgress = (walletInfo) => {
+    if (!walletInfo || !walletInfo.totalSpentInWallet) {
+      return {
+        currentLevel: 'Bronze',
+        nextLevel: 'Silver',
+        progress: 0,
+        currentSpent: 0,
+        nextLevelAmount: 10000000,
+        remainingAmount: 10000000
+      };
+    }
+
+    const totalSpent = walletInfo.totalSpentInWallet;
+
+    // Định nghĩa các mốc cấp độ
+    const levels = [
+      { name: 'Bronze', min: 0, max: 10000000, multiplier: 1 },
+      { name: 'Silver', min: 10000000, max: 50000000, multiplier: 1.5 },
+      { name: 'Gold', min: 50000000, max: 100000000, multiplier: 2 },
+      { name: 'Diamond', min: 100000000, max: Infinity, multiplier: 3 }
+    ];
+
+    // Tìm cấp độ hiện tại
+    let currentLevelIndex = 0;
+    for (let i = 0; i < levels.length; i++) {
+      if (totalSpent >= levels[i].min && totalSpent < levels[i].max) {
+        currentLevelIndex = i;
+        break;
+      }
+    }
+
+    const currentLevel = levels[currentLevelIndex];
+    const currentLevelName = currentLevel.name;
+
+    // Kiểm tra nếu đã đạt cấp độ tối đa
+    if (currentLevelIndex === levels.length - 1) {
+      return {
+        currentLevel: currentLevelName,
+        nextLevel: null,
+        progress: 100,
+        currentSpent: totalSpent,
+        nextLevelAmount: null,
+        remainingAmount: 0,
+        isMaxLevel: true
+      };
+    }
+
+    const nextLevel = levels[currentLevelIndex + 1];
+
+    // Tính toán progress trong cấp độ hiện tại
+    const levelMin = currentLevel.min;
+    const levelMax = currentLevel.max;
+    const levelRange = levelMax - levelMin;
+    const progressInLevel = ((totalSpent - levelMin) / levelRange) * 100;
+
+    return {
+      currentLevel: currentLevelName,
+      nextLevel: nextLevel.name,
+      progress: Math.min(progressInLevel, 100),
+      currentSpent: totalSpent,
+      nextLevelAmount: nextLevel.min,
+      remainingAmount: nextLevel.min - totalSpent,
+      isMaxLevel: false
+    };
+  };
+
+  // Hàm tính điểm loyalty dựa trên tổng chi tiêu (1 điểm = 1000 VND chi tiêu)
+  const calculateLoyaltyPoints = (walletInfo) => {
+    if (!walletInfo || !walletInfo.totalSpentInWallet) return 0;
+    return Math.floor(walletInfo.totalSpentInWallet / 1000);
+  };
+
   if (loading) {
     return (
       <div className="wallet-container">
@@ -215,6 +288,120 @@ const Wallet = ({ user }) => {
                     <div className="benefit-item">💰 Tích điểm cơ bản</div>
                   </>
                 )}
+              </div>
+
+              {/* Progress Bar Section */}
+              <div style={{ marginTop: '24px' }}>
+                <h4 style={{
+                  margin: '0 0 16px 0',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: '#FFD700'
+                }}>
+                  📊 Tiến trình cấp độ
+                </h4>
+
+                {(() => {
+                  const progressData = calculateLoyaltyProgress(walletInfo);
+                  if (progressData.isMaxLevel) {
+                    return (
+                      <div style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                        padding: '16px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <div style={{
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          color: '#FFD700',
+                          textAlign: 'center',
+                          marginBottom: '12px'
+                        }}>
+                          🏆 Đã đạt cấp độ cao nhất!
+                        </div>
+                        <div style={{
+                          backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                          height: '12px',
+                          borderRadius: '6px',
+                          overflow: 'hidden'
+                        }}>
+                          <div style={{
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: '#FFD700',
+                            borderRadius: '6px'
+                          }}></div>
+                        </div>
+                        <div style={{
+                          fontSize: '12px',
+                          textAlign: 'center',
+                          color: '#FFD700',
+                          marginTop: '8px'
+                        }}>
+                          {calculateLoyaltyPoints(walletInfo).toLocaleString()} điểm - {progressData.currentLevel}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      padding: '16px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '12px'
+                      }}>
+                        <span style={{
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          color: '#FFD700'
+                        }}>
+                          {progressData.currentLevel} → {progressData.nextLevel}
+                        </span>
+                        <span style={{
+                          fontSize: '12px',
+                          opacity: 0.8
+                        }}>
+                          {Math.round(progressData.progress)}%
+                        </span>
+                      </div>
+
+                      <div style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        height: '12px',
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginBottom: '8px'
+                      }}>
+                        <div style={{
+                          width: `${progressData.progress}%`,
+                          height: '100%',
+                          backgroundColor: '#FFD700',
+                          borderRadius: '6px',
+                          transition: 'width 0.3s ease'
+                        }}></div>
+                      </div>
+
+                      <div style={{
+                        fontSize: '11px',
+                        textAlign: 'center',
+                        opacity: 0.8
+                      }}>
+                        {calculateLoyaltyPoints(walletInfo).toLocaleString()} điểm • Còn {formatCurrency(progressData.remainingAmount)} để đạt {progressData.nextLevel}
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>
