@@ -6,6 +6,14 @@ import { authenticateToken } from "../../middlewares/auth.middleware";
 
 const router = express.Router();
 
+// Create new user (tạm thời bỏ auth để test)
+router.post(
+  "/",
+  // authenticateToken,
+  validateSchemaYup(userValidation.createSchema),
+  userController.Create
+);
+
 // Get all users (tạm thời bỏ auth để test)
 router.get(
   "/", 

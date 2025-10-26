@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
     "fullName": "CatusAdmin",
-    "email": "Admin2004@gmail.com",
+    "email": "Admin2003@gmail.com",
     "phoneNumber": "0773300148",
     "password": "admin123",
     "role": "admin",

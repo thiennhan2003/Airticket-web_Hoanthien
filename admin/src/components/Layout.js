@@ -63,7 +63,7 @@ const menuItems = [
   { text: 'Người dùng', icon: <PeopleIcon />, path: '/users' },
   { text: 'Quét QR', icon: <QRScannerIcon />, path: '/qr-scanner' },
   { text: 'Hồ sơ', icon: <AccountCircleIcon />, path: '/profile' },
-  { text: 'Cài đặt', icon: <SettingsIcon />, path: '/settings' },
+  // { text: 'Cài đặt', icon: <SettingsIcon />, path: '/settings' },
 ];
 
 const Layout = ({ children, setIsAuthenticated }) => {
