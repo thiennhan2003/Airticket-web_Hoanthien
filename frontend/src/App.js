@@ -118,24 +118,30 @@ function Home({ user, setUser }) {
     <div className="app">
       {/* Header */}
       <header className="header">
-        <div className="header-left">
-          <h2 className="logo">✈️ FlightBooking</h2>
-        </div>
-        <div className="nav">
-          <button className="nav-btn">Flights</button>
-          <button className="nav-btn">Hotels</button>
-          {user ? (
+        <div className="header-container">
+          {/* Logo */}
+          <div className="header-left">
+            <div className="logo">
+              <div className="logo-icon">✈️</div>
+              <span className="logo-text">FlightBooking</span>
+            </div>
+          </div>
+
+
+          {/* Right side */}
+          <div className="header-right">
+            {user ? (
             <div className="user-menu">
               <div
                 className="user-info"
                 onClick={() => setShowUserMenu(!showUserMenu)}
               >
                 <div className="user-avatar">
-                  {user.fullName.charAt(0).toUpperCase()}
+                  {(user.fullName || user.name || 'U').charAt(0).toUpperCase()}
                 </div>
                 <div className="user-details">
-                  <span className="username">{user.fullName}</span>
-                  <span className="user-email">{user.email}</span>
+                  <span className="username">{user.fullName || user.name || 'User'}</span>
+                  <span className="user-email">{user.email || 'user@example.com'}</span>
                 </div>
                 <span className="dropdown-arrow">▼</span>
               </div>
@@ -160,10 +166,19 @@ function Home({ user, setUser }) {
               )}
             </div>
           ) : (
-            <Link to="/login">
-              <button className="login-btn">Đăng nhập</button>
-            </Link>
+            <div className="auth-buttons">
+              <Link to="/login">
+                <button className="login-btn">
+                  <span className="user-icon">👤</span>
+                  Đăng nhập
+                </button>
+              </Link>
+              <Link to="/register">
+                <button className="register-btn">Đăng ký</button>
+              </Link>
+            </div>
           )}
+          </div>
         </div>
       </header>
 

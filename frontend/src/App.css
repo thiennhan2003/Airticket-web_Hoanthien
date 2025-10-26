@@ -11,58 +11,330 @@ body {
 
 /* ================== Header ================== */
 .header {
-  background: linear-gradient(90deg, #0077b6, #00b4d8);
-  color: white;
-  padding: 15px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: white;
+  border-bottom: 1px solid #e5e5e5;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.header h2 {
-  margin: 0;
-  font-size: 1.5rem;
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
 }
-.header .nav button,
-.header .nav a button {
-  margin-left: 20px;
-  background: transparent;
+
+/* Logo */
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logo-icon {
+  font-size: 24px;
+}
+
+.logo-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Navigation */
+.header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.main-nav {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-item {
+  background: none;
   border: none;
-  color: white;
-  font-size: 1rem;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: all 0.2s;
+  position: relative;
+  border-radius: 6px;
+}
+
+.nav-item:hover {
+  color: #333;
+  background: #f8f9fa;
+}
+
+.nav-item.active {
+  color: #333;
+  font-weight: 600;
+  background: #f8f9fa;
+}
+
+/* Right side */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.login-btn:hover {
+  background: #f8f9fa;
+  border-color: #333;
+}
+
+.user-icon {
+  font-size: 16px;
+}
+
+.register-btn {
+  background: #333;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.register-btn:hover {
+  background: #555;
 }
 /* .header .nav button:hover,
 .header .nav a button:hover {
   text-decoration: underline;
 } */
 
+/* User Menu */
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #ced4da;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+  backdrop-filter: blur(15px);
+}
+
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4757, #ff3838);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+  color: #ffffff;
+  box-shadow: 0 5px 20px rgba(255, 71, 87, 0.6);
+  border: 3px solid rgba(255,255,255,0.5);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.username {
+  font-weight: 800;
+  color: #007bff !important;
+  font-size: 18px;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  letter-spacing: 0.8px;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #007bff !important;
+  line-height: 1.2;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  letter-spacing: 0.5px;
+}
+
+.dropdown-arrow {
+  font-size: 18px;
+  color: #1a252f;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  font-weight: 900;
+}
+
+
 .user-menu .dropdown-menu {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 12px);
   right: 0;
-  background-color: #0077b6; /* màu xanh đậm của header */
-  color: white; /* chữ trắng nổi bật */
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  min-width: 140px;
-  z-index: 10;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  min-width: 220px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-menu .dropdown-menu.show {
+  display: block;
 }
 
 .user-menu .dropdown-menu button {
-  width: 80%;
-  padding: 10px 12px;
+  width: 100%;
+  padding: 16px 20px;
   border: none;
-  background-color: #0077b6; /* màu xanh đậm của header */
+  background: none;
   text-align: left;
   cursor: pointer;
-  color: #0077b6; /* màu chữ xanh đậm, dễ nhìn */
-  font-weight: 500;
-  transition: background 0.2s;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.user-menu .dropdown-menu button:last-child {
+  border-bottom: none;
+}
+
+.user-menu .dropdown-menu button:hover {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  transform: translateX(6px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.user-menu .dropdown-menu button .icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+
+/* ================== Responsive ================== */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 15px;
+  }
+  
+  .main-nav {
+    display: none;
+  }
+  
+  .header-right {
+    gap: 12px;
+  }
+  
+  .auth-buttons {
+    gap: 8px;
+  }
+  
+  .login-btn,
+  .register-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .user-info {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .user-details {
+    display: none;
+  }
+  
+  .dropdown-arrow {
+    font-size: 12px;
+    color: white;
+    transition: transform 0.2s ease;
+  }
+  
+  .user-info:hover .dropdown-arrow {
+    transform: rotate(180deg);
+  }
+  
+  .logo-text {
+    font-size: 16px;
+  }
+  
+  .logo-icon {
+    font-size: 20px;
+  }
 }
 
 /* ================== Banner ================== */
