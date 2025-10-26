@@ -1,63 +1,90 @@
-/* Success.css */
+/* Success.css - Modern Design */
 .success-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 15px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.success-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 .success-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 20px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .success-header h2 {
   margin: 0;
   color: #2c3e50;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .back-btn {
-  background: #007bff;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .back-btn:hover {
-  background: #0056b3;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .success-content {
   max-width: 700px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Success Confirmation Card */
 .success-confirmation {
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   text-align: center;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .success-confirmation::before {
@@ -71,33 +98,38 @@
 }
 
 .confirmation-icon {
-  font-size: 80px;
-  margin-bottom: 24px;
+  font-size: 70px;
+  margin-bottom: 20px;
   display: block;
-  animation: checkmark 0.8s ease-in-out;
+  animation: checkmark 1s ease-in-out;
+  filter: drop-shadow(0 3px 6px rgba(40, 167, 69, 0.3));
 }
 
 @keyframes checkmark {
   0% {
-    transform: scale(0);
+    transform: scale(0) rotate(0deg);
     opacity: 0;
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.3) rotate(10deg);
     opacity: 0.8;
   }
   100% {
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
 
 .confirmation-message h3 {
-  margin: 0 0 16px 0;
-  font-size: 28px;
+  margin: 0 0 15px 0;
+  font-size: 24px;
   font-weight: 700;
   color: #2c3e50;
   line-height: 1.2;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .confirmation-message p {
@@ -105,290 +137,124 @@
   color: #6c757d;
   font-size: 16px;
   line-height: 1.5;
+  font-weight: 500;
+}
+
+.confirmation-message strong {
+  color: #28a745;
+  font-weight: 700;
 }
 
 /* Booking Details */
 .booking-details {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 30px;
-  border-radius: 16px;
-  margin: 30px 0;
-  border: 1px solid #dee2e6;
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  padding: 25px;
+  border-radius: 15px;
+  margin: 25px 0;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-details::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
 .detail-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
   padding: 12px 0;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+  transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 8px;
+  padding: 12px 8px;
+  margin: 0 -8px 15px -8px;
 }
 
 .detail-item:last-child {
   border-bottom: none;
   margin-bottom: 0;
-  padding-bottom: 0;
 }
 
 .detail-item span:first-child {
   color: #6c757d;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .detail-item span:last-child {
-  font-weight: 600;
+  font-weight: 700;
   color: #2c3e50;
-  font-size: 15px;
+  font-size: 14px;
+  text-align: right;
 }
 
 .price {
   color: #28a745;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .urgent {
   color: #dc3545;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
   animation: pulse 2s infinite;
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 /* Action Buttons */
 .confirmation-actions {
   display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 32px;
-}
-
-.pay-now-btn,
-.continue-shopping-btn {
-  padding: 16px 32px;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 160px;
-  position: relative;
-  overflow: hidden;
-}
-
-.pay-now-btn {
-  background: linear-gradient(135deg, #28a745, #20c997);
-  color: white;
-  box-shadow: 0 4px 20px rgba(40, 167, 69, 0.3);
-}
-
-.pay-now-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
-}
-
-.continue-shopping-btn {
-  background: linear-gradient(135deg, #6c757d, #5a6268);
-  color: white;
-  box-shadow: 0 4px 20px rgba(108, 117, 125, 0.3);
-}
-
-.continue-shopping-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
-}
-
-/* Warning Message */
-.warning-message {
-  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-  color: #856404;
-  padding: 16px 20px;
-  border-radius: 12px;
-  margin-top: 24px;
-  font-weight: 600;
-  border: 1px solid #ffeaa7;
-  animation: warningPulse 2s infinite;
-  text-align: center;
-}
-
-@keyframes warningPulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.9; }
-  100% { opacity: 1; }
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .success-container {
-    padding: 15px;
-  }
-
-  .success-header {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
-
-  .success-header h2 {
-    font-size: 24px;
-  }
-
-  .success-confirmation {
-    padding: 24px 20px;
-  }
-
-  .confirmation-icon {
-    font-size: 60px;
-  }
-
-  .confirmation-message h3 {
-    font-size: 22px;
-  }
-
-  .confirmation-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .pay-now-btn,
-  .continue-shopping-btn {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .detail-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .detail-item span:last-child {
-    font-size: 16px;
-  }
-}
-
-/* Loading state */
-.loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  font-size: 18px;
-  color: #6c757d;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* Success Confirmation */
-.booking-confirmation {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.confirmation-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.confirmation-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
-  display: block;
-}
-
-.confirmation-message h3 {
-  margin: 0 0 15px 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.confirmation-message p {
-  margin: 8px 0;
-  opacity: 0.9;
-  font-size: 16px;
-}
-
-.booking-details {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 25px;
-  border-radius: 10px;
-  margin: 25px 0;
-  backdrop-filter: blur(10px);
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.detail-item:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-}
-
-.detail-item span:first-child {
-  opacity: 0.8;
-}
-
-.detail-item span:last-child {
-  font-weight: 600;
-}
-
-.price {
-  color: #ffd700;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.urgent {
-  color: #ff6b6b;
-  font-weight: 600;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
-}
-
-.confirmation-actions {
-  display: flex;
   gap: 15px;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 25px;
+  flex-wrap: wrap;
 }
 
 .pay-now-btn,
 .continue-shopping-btn {
-  padding: 15px 30px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 150px;
+  min-width: 140px;
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .pay-now-btn {
@@ -402,8 +268,12 @@
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
+.pay-now-btn:active {
+  transform: translateY(-1px);
+}
+
 .continue-shopping-btn {
-  background: linear-gradient(135deg, #6c757d, #5a6268);
+  background: linear-gradient(135deg, #6c757d, #868e96);
   color: white;
   box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
 }
@@ -413,49 +283,103 @@
   box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
 }
 
+.continue-shopping-btn:active {
+  transform: translateY(-1px);
+}
+
+/* Warning Message */
 .warning-message {
-  background: rgba(255, 107, 107, 0.2);
-  color: #fff;
-  padding: 15px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  color: #856404;
+  padding: 15px 20px;
+  border-radius: 12px;
   margin-top: 20px;
-  font-weight: 600;
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  font-weight: 700;
+  border: 2px solid #ffeaa7;
   animation: warningPulse 2s infinite;
+  text-align: center;
+  font-size: 14px;
+  box-shadow: 0 3px 10px rgba(255, 234, 167, 0.3);
 }
 
 @keyframes warningPulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; }
-  100% { opacity: 1; }
+  0% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.9; 
+    transform: scale(1.02);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
 }
 
 .capitalize {
   text-transform: capitalize;
 }
 
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 20px;
+  color: white;
+  flex-direction: column;
+  gap: 20px;
+  font-weight: 600;
+}
+
+.loading::before {
+  content: '';
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-  .booking-container {
+  .success-container {
     padding: 15px;
   }
 
-  .booking-header {
+  .success-header {
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     text-align: center;
-  }
-
-  .booking-content {
     padding: 20px;
   }
 
-  .confirmation-card {
-    padding: 25px 20px;
+  .success-header h2 {
+    font-size: 28px;
+  }
+
+  .success-confirmation {
+    padding: 30px 20px;
   }
 
   .confirmation-icon {
-    font-size: 50px;
+    font-size: 80px;
+  }
+
+  .confirmation-message h3 {
+    font-size: 26px;
+  }
+
+  .confirmation-message p {
+    font-size: 16px;
   }
 
   .confirmation-actions {
@@ -466,20 +390,42 @@
   .pay-now-btn,
   .continue-shopping-btn {
     width: 100%;
-    max-width: 250px;
+    max-width: 300px;
   }
 
   .detail-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: 8px;
+    text-align: left;
+  }
+
+  .detail-item span:last-child {
+    font-size: 18px;
+    text-align: left;
+  }
+
+  .booking-details {
+    padding: 25px 20px;
   }
 }
 
-/* Loading state */
-.loading {
-  text-align: center;
-  padding: 50px;
-  font-size: 18px;
-  color: #6c757d;
+@media (max-width: 480px) {
+  .success-header h2 {
+    font-size: 24px;
+  }
+
+  .confirmation-message h3 {
+    font-size: 22px;
+  }
+
+  .confirmation-icon {
+    font-size: 60px;
+  }
+
+  .pay-now-btn,
+  .continue-shopping-btn {
+    padding: 15px 30px;
+    font-size: 14px;
+  }
 }
