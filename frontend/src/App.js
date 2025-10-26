@@ -231,62 +231,94 @@ function Home({ user, setUser }) {
 
             return (
               <div key={flight._id} className={`flight-card ${isPastFlight ? 'past-flight' : ''}`}>
-                <div>
-                  <strong>{flight.flightCode}</strong>
-                  {isPastFlight && <span className="past-flight-badge">ĐÃ KHỞI HÀNH</span>}
-                  <p>Tuyến bay: {flight.route}</p>
-                  <p>Khởi hành: {new Date(flight.departureTime).toLocaleString('vi-VN')}</p>
-                  <p>Đến nơi: {new Date(flight.arrivalTime).toLocaleString('vi-VN')}</p>
-                  <p>Số ghế còn: {flight.availableSeats}/{flight.totalSeats}</p>
+                <div className="flight-main-info">
+                  <div className="flight-header">
+                    <div className="flight-code">
+                      <span className="code-text">{flight.flightCode}</span>
+                      {isPastFlight && <span className="past-flight-badge">ĐÃ KHỞI HÀNH</span>}
+                    </div>
+                    <div className="flight-route-info">
+                      <span className="route-text">{flight.route}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flight-details-grid">
+                    <div className="detail-item">
+                      <div className="detail-content">
+                        <span className="detail-label">Khởi hành</span>
+                        <span className="detail-value">{new Date(flight.departureTime).toLocaleString('vi-VN')}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="detail-item">
+                      <div className="detail-content">
+                        <span className="detail-label">Đến nơi</span>
+                        <span className="detail-value">{new Date(flight.arrivalTime).toLocaleString('vi-VN')}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="detail-item">
+                      <div className="detail-content">
+                        <span className="detail-label">Ghế còn</span>
+                        <span className="detail-value">{flight.availableSeats}/{flight.totalSeats}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div className="flight-prices">
-                    <p className="price-label">Giá vé:</p>
+                    <div className="price-label">
+                      <span>Giá vé</span>
+                    </div>
                     <div className="price-options">
                       {flight.economyPrice && (
-                        <span className="price-option">
-                          <span className="price-class">Economy:</span>
+                        <div className="price-option">
+                          <span className="price-class">Economy</span>
                           <span className="price-value">
                             {new Intl.NumberFormat('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                             }).format(flight.economyPrice)}
                           </span>
-                        </span>
+                        </div>
                       )}
                       {flight.businessPrice && (
-                        <span className="price-option">
-                          <span className="price-class">Business:</span>
+                        <div className="price-option">
+                          <span className="price-class">Business</span>
                           <span className="price-value">
                             {new Intl.NumberFormat('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                             }).format(flight.businessPrice)}
                           </span>
-                        </span>
+                        </div>
                       )}
                       {flight.firstClassPrice && (
-                        <span className="price-option">
-                          <span className="price-class">First Class:</span>
+                        <div className="price-option">
+                          <span className="price-class">First Class</span>
                           <span className="price-value">
                             {new Intl.NumberFormat('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                             }).format(flight.firstClassPrice)}
                           </span>
-                        </span>
+                        </div>
                       )}
                       {!flight.economyPrice && !flight.businessPrice && !flight.firstClassPrice && (
-                        <span className="price-unavailable">Giá chưa cập nhật</span>
+                        <div className="price-unavailable">Giá chưa cập nhật</div>
                       )}
                     </div>
                   </div>
                 </div>
-                <button
-                  className={`btn-book ${isPastFlight ? 'disabled' : ''}`}
-                  onClick={() => handleBooking(flight)}
-                  disabled={!user || isPastFlight}
-                >
-                  {isPastFlight ? 'Đã khởi hành' : (user ? 'Đặt vé' : 'Đăng nhập để đặt vé')}
-                </button>
+                
+                <div className="flight-actions">
+                  <button
+                    className={`btn-book ${isPastFlight ? 'disabled' : ''}`}
+                    onClick={() => handleBooking(flight)}
+                    disabled={!user || isPastFlight}
+                  >
+                    {isPastFlight ? 'Đã khởi hành' : (user ? 'Đặt vé' : 'Đăng nhập để đặt vé')}
+                  </button>
+                </div>
               </div>
             );
           })
