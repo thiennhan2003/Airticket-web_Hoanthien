@@ -1,0 +1,10 @@
+{
+  "flightCode": "VN124",
+  "passengerCount": 1,
+  "passengerName": "Nguyễn Văn A",
+  "email": "nguyenvana@example.com",
+  "phoneNumber": "0123456789",
+  "seatNumber": "B2",
+  "price": 1500000,
+  "userId": "68d6d13ee0d4952183857f76"
+}

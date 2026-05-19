@@ -1,0 +1,106 @@
+.back-home {
+  margin-top: 20px;
+}
+
+.back-home a {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  color: #0077b6;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.back-home a:hover {
+  background: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Ảnh nền full màn hình */
+  background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e") no-repeat center center fixed;
+  background-size: cover;
+}
+/* Container */
+.auth-container {
+  max-width: 400px;
+  margin: 150px auto;
+  padding: 40px 30px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(0, 119, 182, 0.15);
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  transition: transform 0.3s ease;
+}
+
+.auth-container:hover {
+  transform: translateY(-4px);
+}
+
+/* Title */
+.auth-title {
+  font-size: 28px;
+  color: #0077b6;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Form */
+.auth-form input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 14px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.auth-form input:focus {
+  border: 1px solid #0077b6;
+  box-shadow: 0 0 6px rgba(0, 119, 182, 0.3);
+}
+
+/* Button */
+.auth-form button {
+  background: linear-gradient(135deg, #0077b6, #00b4d8);
+  color: white;
+  padding: 14px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.auth-form button:hover {
+  background: linear-gradient(135deg, #005f8c, #0096c7);
+  transform: scale(1.02);
+}
+
+/* Text */
+.auth-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-text a {
+  color: #0077b6;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-text a:hover {
+  text-decoration: underline;
+}

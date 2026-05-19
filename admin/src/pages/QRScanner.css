@@ -1,0 +1,533 @@
+/* QRScanner.css */
+.qr-scanner-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+.qr-scanner-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.qr-scanner-header h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.qr-scanner-header p {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.qr-scanner-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Camera section */
+.scanner-section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.camera-container {
+  position: relative;
+  margin: 20px 0;
+}
+
+.camera-feed {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.qr-canvas {
+  display: none;
+}
+
+.camera-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.qr-frame {
+  width: 200px;
+  height: 200px;
+  border: 3px solid #28a745;
+  border-radius: 12px;
+  position: relative;
+}
+
+.qr-frame::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #28a745, #20c997, #17a2b8, #007bff);
+  border-radius: 15px;
+  z-index: -1;
+  animation: border-animation 2s linear infinite;
+}
+
+@keyframes border-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.camera-overlay p {
+  margin-top: 220px;
+  color: #333;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.start-scan-btn, .stop-scan-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.start-scan-btn:hover, .stop-scan-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+}
+
+.stop-scan-btn {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.camera-placeholder {
+  padding: 60px 20px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 12px;
+}
+
+.camera-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.camera-placeholder p {
+  color: #6c757d;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+/* Ticket info section */
+.ticket-info-section {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.ticket-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.ticket-info-header h3 {
+  margin: 0;
+  color: #28a745;
+  font-size: 24px;
+}
+
+.scan-again-btn {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.scan-again-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.ticket-details {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.ticket-code {
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: white !important;
+}
+
+.price {
+  font-weight: 600;
+  color: #007bff;
+}
+
+.verification-info {
+  background: #e9ecef;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #28a745;
+}
+
+.verification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.verification-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.verification-value {
+  color: #333;
+  font-weight: 500;
+}
+
+/* Mode Selection */
+.mode-selection {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.mode-btn {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.mode-btn:hover:not(.active) {
+  background: linear-gradient(135deg, #5a6268 0%, #3d4142 100%);
+  transform: translateY(-2px);
+}
+
+/* File Upload Section */
+.file-upload-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 40px 20px;
+}
+
+.file-upload-placeholder {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 3px dashed #007bff;
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.file-upload-placeholder:hover {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.upload-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.file-upload-placeholder p {
+  color: #495057;
+  font-size: 18px;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+
+.upload-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.upload-btn:hover {
+  background: linear-gradient(135deg, #218838 0%, #1dd1a1 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Upload Tips */
+.upload-tips {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+.upload-tips h4 {
+  margin: 0 0 15px 0;
+  color: #007bff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.upload-tips ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #495057;
+}
+
+.upload-tips li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Flight Info Card */
+.flight-info-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  padding: 25px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.flight-route {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.route-info h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.flight-code {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.seat-info {
+  display: flex;
+  align-items: center;
+}
+
+.flight-times {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.time-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.time-value {
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.seat-display {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.seat-class-badge {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .qr-scanner-container {
+    padding: 10px;
+  }
+
+  .qr-scanner-header {
+    padding: 20px;
+  }
+
+  .qr-scanner-header h2 {
+    font-size: 24px;
+  }
+
+  .flight-route {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .route-info h4 {
+    font-size: 18px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-info-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .mode-selection {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Error message */
+.error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border-left: 4px solid #dc3545;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .qr-scanner-container {
+    padding: 10px;
+  }
+
+  .qr-scanner-header {
+    padding: 20px;
+  }
+
+  .qr-scanner-header h2 {
+    font-size: 24px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-info-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}

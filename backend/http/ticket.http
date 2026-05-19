@@ -1,0 +1,51 @@
+### Get all tickets
+GET http://localhost:8080/api/v1/tickets
+
+### Create new ticket
+POST http://localhost:8080/api/v1/tickets
+Content-Type: application/json
+
+{
+  "ticketCode": "VN123456789",
+  "passengerName": "Nguyen Van A",
+  "email": "nguyenvana@example.com",
+  "phoneNumber": "0905123456",
+  "flightId": "68e8dd7f38e67dd059c80e0e", 
+  "seatNumber": "12A",
+  "seatNumbers": ["12A", "12B"],
+  "seatClasses": ["economy", "economy"],
+  "ticketClass": "economy",
+  "price": 1200000,
+  "passengerCount": 2,
+  "status": "booked",
+  "userId": "68e0afb1970a71c4da54608f",
+  "paymentStatus": "pending",
+  "paymentMethod": "vnpay"
+}
+
+### Create another ticket
+POST http://localhost:8080/api/v1/tickets
+Content-Type: application/json
+
+{
+    "flightCode": "VJ456",
+    "passengerName": "Trần Thị B",
+    "email": "tranb@example.com",
+    "phoneNumber": "0912345678",
+    "seatNumber": "15C",
+    "price": 1200000,
+    "status": "booked"
+}
+
+### Update ticket (thay thế :id bằng ID thực tế trong MongoDB)
+PUT http://localhost:8080/api/v1/tickets/YOUR_TICKET_ID_HERE
+Content-Type: application/json
+
+{
+    "seatNumber": "15B",
+    "status": "checked-in",
+    "price": 2000000
+}
+
+### Delete ticket (thay thế :id bằng ID thực tế)
+DELETE http://localhost:8080/api/v1/tickets/YOUR_TICKET_ID_HERE

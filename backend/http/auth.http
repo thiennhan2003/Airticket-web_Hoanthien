@@ -1,0 +1,26 @@
+### 1️⃣ Register user
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Nhân Test",
+  "email": "123456tu@gmail.com",
+  "phoneNumber": "0123456789",
+  "password": "123456"
+}
+
+### 2️⃣ Login user
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "Admin2004@gmail.com",
+  "password": "admin123"
+}
+
+### 3️⃣ Get profile
+# Lưu ý: copy token từ response login và dán vào <TOKEN>
+GET http://localhost:8080/api/v1/auth/get-profile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGRlNWI2NGIyM2VmZDVjZmE3NjBlOGIiLCJlbWFpbCI6ImFkbWluMjAwNEBnbWFpbC5jb20iLCJpYXQiOjE3NTk0MDMxMzEsImV4cCI6MTc1OTQ4OTUzMX0.2vBlZ9BMQWOuXDIkZ1ajpaefpvZLpIAkGhqEsdnPUhY
+

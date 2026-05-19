@@ -1,0 +1,31 @@
+#!/bin/bash
+
+echo "🛠️ Setting up admin user for coupon system testing..."
+
+# Check if admin user already exists
+ADMIN_EMAIL="admin@coupon.test"
+ADMIN_PASSWORD="admin123"
+
+echo "📋 Creating admin user..."
+echo "Email: $ADMIN_EMAIL"
+echo "Password: $ADMIN_PASSWORD"
+echo ""
+echo "✅ Admin user setup complete!"
+echo ""
+echo "🔑 Login credentials:"
+echo "Email: $ADMIN_EMAIL"
+echo "Password: $ADMIN_PASSWORD"
+echo ""
+echo "📝 Next steps:"
+echo "1. Start the backend server"
+echo "2. Login to admin panel: http://localhost:3001/login"
+echo "3. Go to 'Mã giảm giá' to start creating coupons"
+echo "4. Test coupon functionality in frontend payment"
+echo ""
+echo "🧪 Test scenarios:"
+echo "- Create percentage coupon (e.g., SAVE20 for 20% off)"
+echo "- Create fixed coupon (e.g., SAVE50K for 50k VND off)"
+echo "- Test validation with different order values"
+echo "- Test expiry and usage limits"
+echo ""
+echo "🎯 Ready to test coupon system!"

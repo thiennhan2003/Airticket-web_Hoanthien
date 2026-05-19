@@ -1,0 +1,253 @@
+/* Verification.css */
+.verification-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.verification-card {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.verification-header {
+  margin-bottom: 30px;
+}
+
+.verification-header h2 {
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  font-size: 28px;
+}
+
+.verification-header p {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 16px;
+}
+
+.email-info {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border-left: 4px solid #007bff;
+}
+
+.email-icon {
+  font-size: 24px;
+  margin-right: 15px;
+}
+
+.email-text {
+  text-align: left;
+  flex: 1;
+}
+
+.email-text p {
+  margin: 0 0 5px 0;
+  color: #2c3e50;
+}
+
+.email-hint {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.verification-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.verification-input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.verification-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.verification-input:disabled {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #f5c6cb;
+  font-size: 14px;
+}
+
+.verify-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.verify-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.verify-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.verification-footer {
+  border-top: 1px solid #e9ecef;
+  padding-top: 25px;
+}
+
+.timer {
+  margin-bottom: 20px;
+}
+
+.timer p {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.expired {
+  color: #dc3545 !important;
+  font-weight: 600;
+}
+
+.resend-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.resend-btn:hover:not(:disabled) {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+.resend-btn:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.back-btn {
+  background: transparent;
+  color: #007bff;
+  border: 2px solid #007bff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.back-btn:hover {
+  background: #007bff;
+  color: white;
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .verification-container {
+    padding: 15px;
+  }
+
+  .verification-card {
+    padding: 30px 20px;
+  }
+
+  .verification-header h2 {
+    font-size: 24px;
+  }
+
+  .verification-input {
+    font-size: 20px;
+    letter-spacing: 6px;
+    padding: 12px;
+  }
+
+  .email-info {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .email-icon {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}

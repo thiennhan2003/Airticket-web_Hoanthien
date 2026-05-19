@@ -1,0 +1,96 @@
+.back-home {
+  margin-top: 20px;
+}
+
+.back-home a {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #f1f5f9;
+  color: #0077b6;
+  font-weight: 500;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.back-home a:hover {
+  background: #e2e8f0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Ảnh nền full màn hình */
+  background: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e") no-repeat center center fixed;
+  background-size: cover;
+}
+.register-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 32px 28px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.register-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #0284c7; /* xanh Traveloka */
+}
+
+.register-form input {
+  display: block;
+  width: 95%;
+  padding: 14px;
+  margin: 12px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.register-form input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+  outline: none;
+}
+
+.register-form button {
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  color: white;
+  padding: 14px;
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.register-form button:hover {
+  background: linear-gradient(135deg, #0369a1, #0891b2);
+}
+
+.register-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.register-footer a {
+  color: #0284c7;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.register-footer a:hover {
+  text-decoration: underline;
+}
